@@ -3,24 +3,17 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 )
 
+const (
+	bufsize = 1024 * 512
+)
+
 func main() {
-	file, err := os.Create("NewFile")
-	if err != nil {
-		panic(err)
-	}
-
-	b := write(file)
-	log.Printf("Finished writing to file: %d", b)
-
-	rf, _ := os.Open("NewFile")
-	read(rf)
-
-	af, _ := os.OpenFile("NewFile", os.O_APPEND|os.O_WRONLY, 0600)
-	append(af)
+	f, _ := os.Open("NewFile")
+	//fmt.Println(err)
+	read(f)
 }
 
 func write(file *os.File) int {
@@ -31,14 +24,13 @@ func write(file *os.File) int {
 	return b
 }
 
-func read(file *os.File) {
-	reader := bufio.NewReader(file)
-	data, err := reader.Peek(50)
-	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-	}
-
-	fmt.Println(string(data))
+func read(f *os.File) {
+	fmt.Println("Reading file now...")
+	p := make([]byte, bufsize)
+	reader := bufio.NewReader(f)
+	reader.Read(p)
+	str := string(p)
+	fmt.Println(str)
 }
 
 func append(file *os.File) {
